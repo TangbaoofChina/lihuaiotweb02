@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.system.mapper.DeviceInfoMapper">
+    <resultMap id="BaseResultMap" type="com.system.po.DeviceInfo">
+      <!--  <result column="数据库字段名" property="实体类属性" jdbcType="数据库字段类型" />-->
+        <id column="DI_SERIALNUM" jdbcType="VARCHAR" property="dSerialNum"/>
+        <result column="DI_NAME" jdbcType="VARCHAR" property="dName"/>
+        <result column="DI_IP" jdbcType="VARCHAR" property="dIp"/>
+        <result column="DI_PORT" jdbcType="VARCHAR" property="dPort"/>
+        <result column="DI_PROTOCOL" jdbcType="VARCHAR" property="dProtocol"/>
+        <result column="DI_SENDDATE" jdbcType="VARCHAR" property="dSendTime"/>
+        <result column="DI_RECEIVEDATE" jdbcType="VARCHAR" property="dReceiveTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        DI_NAME, DI_SERIALNUM,DI_IP,DI_PORT,DI_PROTOCOL,DI_SENDDATE,DI_RECEIVEDATE
+    </sql>
+    <select id="getCountDevice"  resultType="Integer">
+        select
+        COUNT(*)
+        from IOT_DEVICEINFO
+    </select>
+    <select id="selectDeviceInfoByPaging" parameterType="PagingVO" resultMap="BaseResultMap">
+        select *
+        from
+        (select A.*,rownum rn
+        from
+        (
+        select <include refid="Base_Column_List"/>
+        from IOT_DEVICEINFO
+        ORDER by DI_SERIALNUM ASC
+        )A
+        where rownum &lt;= #{messageCount}
+        )
+        where rn &gt; #{toPageNo}
+    </select>
+    <select id="selectDeviceInfo"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from IOT_DEVICEINFO
+        order by DI_SERIALNUM asc
+    </select>
+    <select id="selectDeviceByORGNULL" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from IOT_DEVICEINFO
+        WHERE di_nodeId IS NULL or di_nodeId = #{orgId}
+        order by DI_SERIALNUM asc
+    </select>
+    <select id="selectDeviceByORGId" parameterType="string"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from IOT_DEVICEINFO
+        WHERE di_nodeId = #{orgId}
+        order by DI_SERIALNUM asc
+    </select>
+    <select id="selectDeviceInfoById"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from IOT_DEVICEINFO
+        WHERE DI_SERIALNUM = #{deviceId}
+    </select>
+    <select id="selectDeviceInfoByIDs"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from IOT_DEVICEINFO
+        where DI_SERIALNUM in
+        <foreach collection="deviceIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <update id="updateDeviceByPrimaryKey" parameterType="com.system.po.DeviceInfo" >
+        update IOT_DEVICEINFO
+        <set >
+            <if test="dName != null" >
+                DI_NAME = #{dName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where DI_SERIALNUM = #{dSerialNum,jdbcType=VARCHAR}
+    </update>
+    <update id="updateDeviceInfoByNodeId">
+        update IOT_DEVICEINFO
+        <set >
+            <if test="sNodeId != null" >
+                DI_NODEID = #{sNodeId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where DI_SERIALNUM = #{sSerialNum,jdbcType=VARCHAR}
+    </update>
+</mapper>

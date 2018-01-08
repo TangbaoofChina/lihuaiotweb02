@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="lihuaiotweb01:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="lihuaiotweb01.war">
+      <element id="artifact" artifact-name="lihuaiotweb01:war exploded" />
+    </root>
+  </artifact>
+</component>

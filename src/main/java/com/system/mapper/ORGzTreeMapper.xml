@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.system.mapper.ORGzTreeMapper">
+    <resultMap id="BaseResultMap" type="com.system.po.zTreeNode">
+        <!--  <result column="数据库字段名" property="实体类属性" jdbcType="数据库字段类型" />-->
+        <id column="NODE_ID" jdbcType="VARCHAR" property="id"/>
+        <result column="NODE_NAME" jdbcType="VARCHAR" property="name"/>
+        <result column="NODE_PID" jdbcType="VARCHAR" property="pId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        NODE_ID, NODE_NAME,NODE_PID
+    </sql>
+    <select id="selectORGInfo"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from iot_orgtreenode
+        order by NODE_NAME
+    </select>
+    <select id="selectORGInfoByNameAndParentId"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from iot_orgtreenode
+        WHERE NODE_NAME = #{sNodeName,jdbcType=VARCHAR}
+        and NODE_PID = #{parentId,jdbcType=VARCHAR}
+        order by NODE_NAME
+    </select>
+    <select id="selectORGInfoByNodeId"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from iot_orgtreenode
+        WHERE NODE_ID = #{nodeId,jdbcType=VARCHAR}
+        order by NODE_NAME
+    </select>
+    <select id="selectORGInfoByParentId"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from iot_orgtreenode
+        WHERE NODE_PID = #{nodeId,jdbcType=VARCHAR}
+        order by NODE_NAME
+    </select>
+    <update id="updateORGInfoByNodeId">
+        UPDATE iot_orgtreenode
+        <set>
+            <if test="nodeName !=null">
+                NODE_NAME = #{nodeName,jdbcType=VARCHAR}
+            </if>
+        </set>
+        WHERE NODE_ID = #{nodeId,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertORGInfo" >
+        <selectKey keyProperty="sid" resultType="String" order="BEFORE">
+            select sys_guid() from dual
+        </selectKey>
+        INSERT INTO iot_orgtreenode(NODE_ID,NODE_NAME,NODE_PID)
+        values (#{sid,jdbcType=VARCHAR},#{childName,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR})
+    </insert>
+    <delete id="deleteORGInfoByNodeId">
+        DELETE
+        from iot_orgtreenode
+        WHERE NODE_ID = #{nodeId,jdbcType=VARCHAR}
+    </delete>
+</mapper>

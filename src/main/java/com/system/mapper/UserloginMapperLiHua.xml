@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.system.mapper.UserloginMapperLiHua" >
+    <resultMap id="BaseResultMap" type="com.system.po.Userlogin" >
+        <id column="FID" property="userid" jdbcType="VARCHAR" />
+        <result column="FNUMBER" property="username" jdbcType="VARCHAR" />
+        <result column="FPASSWORD" property="password" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        FID,FNUMBER,FPASSWORD
+    </sql>
+    <select id="selectByName"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from T_PM_USER
+        WHERE FNUMBER = #{sName}
+    </select>
+</mapper>

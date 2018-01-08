@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.system.mapper.DeviceMessageMapper">
+    <resultMap id="BaseRealResultMap" type="com.system.po.DeviceMessage">
+        <!--  <result column="数据库字段名" property="实体类属性" jdbcType="数据库字段类型" />-->
+        <id column="DI_SERIALNUM" jdbcType="VARCHAR" property="deviceSerialNum"/>
+        <result column="DI_NAME" jdbcType="VARCHAR" property="dName"/>
+        <result column="EC01_INTEMP1" jdbcType="FLOAT" property="eC01InTemp1"/>
+        <result column="EC01_INTEMP2" jdbcType="FLOAT" property="eC01InTemp2"/>
+        <result column="EC01_INTEMP3" jdbcType="FLOAT" property="eC01InTemp3"/>
+        <result column="EC01_OUTTEMP4" jdbcType="FLOAT" property="eC01OutTemp4"/>
+        <result column="EC01_DATASENDDATE" jdbcType="VARCHAR" property="sSendTime"/>
+        <result column="EC01_DATARECEIVEDATE" jdbcType="VARCHAR" property="sRecevieTime"/>
+    </resultMap>
+    <resultMap id="BaseHisResultMap" type="com.system.po.DeviceMessage">
+        <id column="DI_SERIALNUM" jdbcType="VARCHAR" property="deviceSerialNum"/>
+        <result column="DI_NAME" jdbcType="VARCHAR" property="dName"/>
+        <result column="HEC01_INTEMP1" jdbcType="FLOAT" property="eC01InTemp1"/>
+        <result column="HEC01_INTEMP2" jdbcType="FLOAT" property="eC01InTemp2"/>
+        <result column="HEC01_INTEMP3" jdbcType="FLOAT" property="eC01InTemp3"/>
+        <result column="HEC01_OUTTEMP4" jdbcType="FLOAT" property="eC01OutTemp4"/>
+        <result column="HEC01_DATASENDDATE" jdbcType="VARCHAR" property="sSendTime"/>
+        <result column="HEC01_DATARECEIVEDATE" jdbcType="VARCHAR" property="sRecevieTime"/>
+    </resultMap>
+    <sql id="Real_Column_List">
+        a.DI_NAME,a.DI_SERIALNUM,b.EC01_INTEMP1,b.EC01_INTEMP2,b.EC01_INTEMP3,b.EC01_OUTTEMP4,b.EC01_DATASENDDATE,b.EC01_DATARECEIVEDATE
+    </sql>
+    <sql id="His_Column_List">
+        a.DI_NAME,a.DI_SERIALNUM,b.HEC01_INTEMP1,b.HEC01_INTEMP2,b.HEC01_INTEMP3,b.HEC01_OUTTEMP4,b.HEC01_DATASENDDATE,b.HEC01_DATARECEIVEDATE
+    </sql>
+    <select id="getCountDevice"  resultType="java.lang.Integer">
+        select COUNT(*) from IOT_EVNCON_01
+    </select>
+    <select id="selectRealDeviceMsgByPaging" parameterType="PagingVO" resultMap="BaseRealResultMap">
+        select *
+        from
+        (select A.*,rownum rn
+        from
+        (
+        select <include refid="Real_Column_List"/>
+        from IOT_DEVICEINFO a,IOT_EVNCON_01 b
+        WHERE a.DI_SERIALNUM = b.DEVICE_SERIALNUM
+        ORDER by b.DEVICE_SERIALNUM ASC
+        )A
+        where rownum &lt;= #{messageCount}
+        )
+        where rn &gt; #{toPageNo}
+    </select>
+    <select id="selectRealDeviceMsgByName"  resultMap="BaseRealResultMap">
+        select
+        <include refid="Real_Column_List"/>
+        from IOT_DEVICEINFO a,IOT_EVNCON_01 b
+        WHERE a.DI_SERIALNUM = b.DEVICE_SERIALNUM
+        and a.di_name like concat(concat('%',#{sDeviceName}),'%')
+        ORDER by b.DEVICE_SERIALNUM ASC
+    </select>
+    <select id="selectRealDeviceMessage"  resultMap="BaseRealResultMap">
+        select
+        <include refid="Real_Column_List"/>
+        from IOT_DEVICEINFO a,IOT_EVNCON_01 b
+        WHERE a.DI_SERIALNUM = b.DEVICE_SERIALNUM
+        ORDER by b.DEVICE_SERIALNUM ASC
+    </select>
+    <select id="selectHisDevMsgByTimeAndID" resultMap="BaseHisResultMap">
+        select
+        <include refid="His_Column_List"/>
+        from IOT_DEVICEINFO a,IOT_HISEVNCON_01 b
+        WHERE a.DI_SERIALNUM = b.DEVICE_SERIALNUM
+        AND a.DI_SERIALNUM = #{deviceId,jdbcType=VARCHAR}
+        AND b.HEC01_DATASENDDATE BETWEEN to_date(#{startDate,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+        AND to_date(#{endDate,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+        order by b.HEC01_DATASENDDATE ASC
+    </select>
+    <select id="selectHisDevMsgByTimeAndIDs" resultMap="BaseHisResultMap">
+        select
+        <include refid="His_Column_List"/>
+        from IOT_DEVICEINFO a,IOT_HISEVNCON_01 b
+        WHERE a.DI_SERIALNUM = b.DEVICE_SERIALNUM
+        AND a.DI_SERIALNUM in
+        <foreach collection="deviceIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND b.HEC01_DATASENDDATE BETWEEN to_date(#{startDate,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+        AND to_date(#{endDate,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+        order by b.HEC01_DATASENDDATE ASC
+    </select>
+    <select id="selectHisDevMsgByTimeAndIDsAndPage" resultMap="BaseHisResultMap">
+        select *
+        from
+        (select A.*,rownum rn
+        from
+        (select
+        <include refid="His_Column_List"/>
+        from IOT_DEVICEINFO a,IOT_HISEVNCON_01 b
+        WHERE a.DI_SERIALNUM = b.DEVICE_SERIALNUM
+        AND a.DI_SERIALNUM in
+        <foreach collection="deviceIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND b.HEC01_DATASENDDATE BETWEEN to_date(#{startDate,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+        AND to_date(#{endDate,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+        order by b.HEC01_DATASENDDATE ASC
+        )A
+        where rownum &lt;= #{bigIndex}
+        )
+        where rn &gt;= #{smallIndex}
+    </select>
+</mapper>

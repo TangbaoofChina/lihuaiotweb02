@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.system.mapper.PersonInfoMapper">
+    <resultMap id="BaseResultMap" type="com.system.po.PeopleInfo">
+        <!--  <result column="数据库字段名" property="实体类属性" jdbcType="数据库字段类型" />-->
+        <id column="USER_ID" jdbcType="VARCHAR" property="personId"/>
+        <result column="USER_NAME" jdbcType="VARCHAR" property="personName"/>
+        <result column="USER_ORGID" jdbcType="VARCHAR" property="orgId"/>
+        <result column="USER_ORGNAME" jdbcType="VARCHAR" property="orgName"/>
+    </resultMap>
+    <resultMap id="BaseResultMap1" type="com.system.po.PeopleInfo">
+        <!--  <result column="数据库字段名" property="实体类属性" jdbcType="数据库字段类型" />-->
+        <id column="fid" jdbcType="VARCHAR" property="personId"/>
+        <result column="fnumber" jdbcType="VARCHAR" property="personName"/>
+        <result column="fid" jdbcType="VARCHAR" property="orgId"/>
+        <result column="fname_l2" jdbcType="VARCHAR" property="orgName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        USER_ID,USER_NAME,USER_ORGID,USER_ORGNAME
+    </sql>
+    <select id="selectPeopleInfoByORGID" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from iot_userorg
+        WHERE USER_ORGID = #{nodeId,jdbcType=VARCHAR}
+        order by USER_NAME desc
+    </select>
+    <select id="selectPeopleByPeopleId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from iot_userorg
+        WHERE USER_ID = #{peopleId,jdbcType=VARCHAR}
+        order by USER_NAME desc
+    </select>
+    <select id="selectAllPeopleInfo" resultMap="BaseResultMap1">
+        select
+        a.fid,a.fnumber,b.fid,b.fname_l2
+        from t_pm_user a,t_pm_usergroup b
+        where a.fgroupid=b.fid
+        order by a.fnumber desc
+    </select>
+    <update id="updatePeopleByPeopleId" parameterType="com.system.po.PeopleInfo" >
+        update iot_userorg
+        SET  USER_NAME = #{personName,jdbcType=VARCHAR},
+                USER_ORGID = #{orgId,jdbcType=VARCHAR},
+                USER_ORGNAME = #{orgName,jdbcType=VARCHAR}
+        where USER_ID = #{personId,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertPeople">
+        INSERT INTO iot_userorg(USER_ID,USER_NAME,USER_ORGID,USER_ORGNAME)
+        VALUES (#{peopleInfo.personId,jdbcType=VARCHAR},#{peopleInfo.personName,jdbcType=VARCHAR},
+        #{peopleInfo.orgId,jdbcType=VARCHAR},#{peopleInfo.orgName,jdbcType=VARCHAR})
+    </insert>
+</mapper>

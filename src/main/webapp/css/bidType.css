@@ -1,0 +1,148 @@
+/*主体内容*/
+.bte-wrap{
+    width: 98%;
+    min-width: 980px;
+    min-height: 300px;
+    background-color: #fff;
+    margin: 0 auto;
+    padding-top: 15px;
+}
+.bte-addNew{
+    margin-bottom: 15px;
+}
+.bte-table{
+    width: 98%;
+    margin: 0 auto;
+    font-size: 15px;
+}
+.bte-table th{
+    color: #5EB95E;
+}
+.bte-table td{
+    padding: 0 auto;
+}
+.bte-page-wrap{
+    width: 100%;
+    height: 80px;
+    margin: 0 auto;
+}
+.bte-page{
+    list-style: none;
+    float: right;
+}
+.bte-page li{
+    display: inline-block;
+    width: 32px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    border: 1px solid #f0f0f0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.bte-page li:hover{
+    background-color: #0E90D2;
+    color: #fff;
+}
+.actived{
+    background-color: #0E90D2;
+    color: #fff;
+}
+/*批量删除*/
+.bte-addNew-delete{
+    width: 120px;
+    height: 30px;
+    border: 1px solid #f0f0f0;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 5px;
+    display: none;
+}
+/*删除*/
+.delete-popup{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.2);
+    display: none;
+}
+.delete-wrap{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 480px;
+    min-height: 240px;
+    margin-left: -240px;
+    margin-top: -120px;
+    border-radius: 12px;
+    background-color: #fff;
+}
+.delete-point{
+    width: 100%;
+    height: 48px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.delete-point h3{
+    height: 48px;
+    line-height: 10px;
+    padding-left: 20px;
+    display: inline-block;
+}
+.delete-point button{
+    font-size: 18px;
+    width: 24px;
+    height: 24px;
+    margin-right: 20px;
+    margin-top: 12px;
+}
+.delete-content{
+    width: 100%;
+    height: 140px;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: center;
+    line-height: 140px;
+}
+.delete-btn{
+    height: 52px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    background-color: #f0f0f0;
+    line-height: 52px;
+    padding-left: 340px;
+}
+/*新建*/
+.addNew-wrap{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 480px;
+    min-height: 280px;
+    margin-left: -240px;
+    margin-top: -180px;
+    border-radius: 12px;
+    background-color: #fff;
+}
+.addNew-content{
+    width: 100%;
+    min-height: 180px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.form-num,.form-name{
+    display: inline-block;
+    margin-top: 20px;
+}
+.addNew-content input{
+    width: 255px;
+    margin-left: 20px;
+}
+.addNew-content textarea{
+    resize: none;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+.form-num,.form-name,.form-org,.form-introduce{
+    padding-left: 60px;
+}
+
